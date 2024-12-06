@@ -9,7 +9,7 @@ class Player : public GameObject, public Box
 {
     graphics::Brush m_brush_player;
     graphics::Brush m_brush_lives;
-    //std::vector<Weapon> m_sprites;
+    std::vector<GameObject> m_sprites;
 
     const float m_gravity = 10.0f;
     const float m_accel_vertical = 200.0f;
@@ -19,6 +19,7 @@ class Player : public GameObject, public Box
     void movePlayer(float dt);
 
 public:
+
     float m_vx = 0.0f;
     float m_vy = 0.0f;
     unsigned short current_health = 10;
@@ -28,10 +29,10 @@ public:
     void draw() override;
 
     void drawHealth();
-    void activateWeapon();
     Player(std::string name) :GameObject(name) {}
 
 protected:
+
     void debugDraw();
     unsigned short getHealth() { return current_health; }
     void updateHealth(unsigned short new_health) { current_health = new_health; }

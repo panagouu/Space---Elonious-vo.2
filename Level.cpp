@@ -32,7 +32,16 @@ void Level::update(float dt)
 		m_next_met = 900 + (rand() % 2001);
 	}
 
-	/* Enhmerwse ola ta dunamika antikeimena pou einai energa */
+	/* Create an object Weapon and add it to the dynamic objects */
+	if (graphics::getKeyState(graphics::SCANCODE_SPACE))
+	{
+		Weapon* weapon = new Weapon("Laser");
+		m_dynamic_objects.push_back(weapon);
+		weapon->init();
+		
+	}
+
+	/* Update the elements of the dynamic_objects vector that are active  */
 	for (auto p : m_dynamic_objects)
 	{
 		if (p) { p->update(dt); }
@@ -66,19 +75,11 @@ void Level::draw()
 	float offset_y = m_state->m_global_offset_y + h / 2.0f;
 
 	graphics::drawRect(offset_x, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
-	std::cout << "offset_x: " << offset_x << ", offset_y: " << offset_y << " -> ";
 
 	if (m_state->getPlayer()->isActive())
 	{
 		m_state->getPlayer()->draw();
 		m_state->getPlayer()->drawHealth();
-
-		std::cout << "m_pos_x: " << m_state->getPlayer()->m_pos_x << ", m_pos_y: " << m_state->getPlayer()->m_pos_y << std::endl;
-	}
-
-	if (m_state->getWeapon())
-	{
-		m_state->getWeapon()->draw();
 	}
 
 	for (auto p : m_static_objects)
@@ -90,8 +91,6 @@ void Level::draw()
 	{
 		if (p) { p->draw(); }
 	}
-
-
 }
 
 Level::~Level()

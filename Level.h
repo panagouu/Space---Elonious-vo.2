@@ -15,9 +15,10 @@ class Level : public GameObject
 	float time_passed = 0.0f;
 
 	std::vector<GameObject*> m_static_objects;
-	std::list<GameObject*> m_dynamic_objects; // θα χρειαστει να κανουμε update+πολυμορφικη χρηση
+	std::list<GameObject*> m_dynamic_objects; 
 
 public:
+
 	Level(const std::string& name = "Level0");
 	void update(float dt)  override;
 	void init()  override;

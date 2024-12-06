@@ -6,6 +6,7 @@
 class GameState
 {
 private: 
+
 	std::string m_asset_path = "assets\\";
 
 	float m_canvas_width = 12.0f;
@@ -19,10 +20,10 @@ private:
 	class Level* m_current_level = 0;
 
 public:
+
 	float m_global_offset_x = 0.0f; 
 	float m_global_offset_y = 0.0f;
 	bool m_debugging = false;
-	class Weapon* m_weapon = 0;
 
 	void init();
 	void draw();
@@ -38,5 +39,4 @@ public:
 	std::string getFullAssetPath(const std::string& asset);
 
 	class Player* getPlayer() { return m_player; }
-	class Weapon* getWeapon() { return m_weapon; }
 };
