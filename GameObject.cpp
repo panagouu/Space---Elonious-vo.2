@@ -7,4 +7,4 @@ GameObject::GameObject(const std::string& name)
 
 }
 
-int GameObject::m_next_id = 1;
+int GameObject::m_next_id = 1; //AAAAAAAAAAAAAAA
