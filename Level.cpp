@@ -4,6 +4,7 @@
 #include "Meteorite.h"
 #include "Weapon.h"
 #include <iostream>
+#include "Star.h"
 
 Level::Level(const std::string& name)
 {
@@ -54,6 +55,14 @@ void Level::init()
 {
 	m_brush_back.outline_opacity = 0.0f;
 	m_brush_back.texture = m_state-> getFullAssetPath("background4.png");
+
+	/* Create 10 stars for when the player loses lives and wants to regain them */
+	Star* star = 0;
+	for (int i = 0; i < 5; i++)
+	{
+		star = new Star("star" + i);
+		m_static_objects.push_back(star);
+	}
 
 	for (auto p : m_static_objects) 
 	{

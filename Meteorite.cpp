@@ -12,13 +12,14 @@ void Meteorite::update(float dt)
 
 void Meteorite::init()
 {
-	m_pos_x = m_state->getCanvasWidth() ;
+	m_pos_x = 2*(m_state->getCanvasWidth()) + 5;
 	m_pos_y = rand() % (int)m_state->getCanvasHeight();
 
 	/* Brush of the meteorite */
 	m_brush_meteorite.fill_opacity = 1.0f;
 	m_brush_meteorite.outline_opacity = 0.0f;
 	m_brush_meteorite.texture = m_state->getFullAssetPath("rock-enemy.png");
+
 }
 
 void Meteorite::draw()

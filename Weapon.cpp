@@ -17,7 +17,7 @@ void Weapon::init()
 
 void Weapon::draw()
 {
-	graphics::drawRect(m_pos_x, m_pos_y, 0.4f, 0.35f, m_brush_weapon);
+	graphics::drawRect( m_pos_x, m_pos_y, 0.15f, 0.15f, m_brush_weapon);
 	graphics::resetPose();
 }
 

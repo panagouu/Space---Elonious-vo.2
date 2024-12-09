@@ -11,6 +11,9 @@ class Player : public GameObject, public Box
     graphics::Brush m_brush_lives;
     std::vector<GameObject> m_sprites;
 
+    float x = 0;
+    float y = 0;
+
     const float m_gravity = 10.0f;
     const float m_accel_vertical = 200.0f;
     const float m_accel_horizontal = 40.0f;

@@ -2,6 +2,8 @@
 #include <sgg/graphics.h>
 #include "GameState.h"
 #include "util.h"
+#include <algorithm>
+#include <iostream>
 
 void Player::update(float dt)
 {
@@ -43,9 +45,8 @@ void Player::init()
 
 void Player::draw()
 {
-	graphics::drawRect(m_state-> getCanvasWidth() * 0.5f, m_state-> getCanvasHeight() * 0.5f,
-		1.0f, 1.0f, m_brush_player);
-
+	graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 1.0f, 1.0f, m_brush_player);
+	
 	graphics::resetPose();
 }
 
@@ -58,8 +59,8 @@ void Player::drawHealth()
 
 	for (int i = 0; i < current_health; i++) 
 	{
-		graphics::drawRect((m_state->getCanvasWidth() * 0.05f) + (i*0.5f), m_state->getCanvasHeight() * 0.05f,
-			0.5f, 0.5f, m_brush_lives);
+		graphics::drawRect((m_state->getCanvasWidth() * 0.05f) + (i*0.35f), m_state->getCanvasHeight() * 0.035f,
+			0.35f, 0.35f, m_brush_lives);
 	}
 }
 
