@@ -10,13 +10,9 @@ void Star::update(float dt)
 void Star::init()
 {
 	/* Generate random numbers for the coordinates x and y of the stars */
-
-	int random_width = (std::rand() % (3*(int)m_state->getCanvasWidth()) + 1) - (int)m_state->getCanvasWidth();
-	int random_height = std::rand() % ((int)m_state->getCanvasHeight() + 1);
+	float random_width = static_cast<float>(std::rand() % (2 * (int)m_state->getCanvasWidth() + 1));
+	float random_height = static_cast<float>(std::rand() % ((int)m_state->getCanvasHeight() + 1));
 	
-	std::cout << "width: " << random_width;
-	std::cout << "heigth: " << random_height;
-
 	m_pos_x = random_width;
 	m_pos_y = random_height;
 

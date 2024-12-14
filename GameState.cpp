@@ -16,6 +16,7 @@ void GameState::init()
 	m_player = new Player("SpaceCraft");
 	m_player->init();
 
+	graphics::setFont(std::string(m_asset_path) + "chrusty-rock.ttf");
 	graphics::preloadBitmaps(getAssetDir());
 }
 

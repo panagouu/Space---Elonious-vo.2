@@ -11,11 +11,11 @@ protected:
 	std::string m_name;
 
 	int m_id = 0;
-	bool m_active = true;
 
 public:
 
 	GameObject(const std::string& name = "");
+	bool m_active = true;
 
 	virtual void update(float dt) {}
 	virtual void init() {}
@@ -23,5 +23,4 @@ public:
 	virtual ~GameObject() {}
 
 	bool isActive() { return m_active; }
-	void setActive(bool a) { m_active = a; }
 };

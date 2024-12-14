@@ -14,9 +14,9 @@ private:
 
 	static GameState* m_unique_instance;
 
-	GameState(); // εδω να διαχειριζετε τον παιχτη και τα λεβελ
+	GameState();
 
-	class Player * m_player = 0; // κυκλική εξάρτηση και στα δύο 
+	class Player * m_player = 0; 
 	class Level* m_current_level = 0;
 
 public:

@@ -2,6 +2,9 @@
 
 #include <sgg/graphics.h>
 #include "GameObject.h"
+#include "Meteorite.h"
+#include "Weapon.h"
+#include "Star.h"
 #include <list>
 
 class Level : public GameObject
@@ -14,15 +17,23 @@ class Level : public GameObject
 	float m_next_met = 0.0f;
 	float time_passed = 0.0f;
 
-	std::vector<GameObject*> m_static_objects;
-	std::list<GameObject*> m_dynamic_objects; 
+	/* The variable pressed_space prevents multiple Weapon objects from being created when pressing space once */
+	bool pressed_space = false;
+
+	std::vector<Star*> m_static_objects;
+	std::vector<Meteorite*> m_meteorite_objects;
+	std::vector<Weapon*> m_weapon_objects;
 
 public:
 
-	Level(const std::string& name = "Level0");
+	Level(const std::string& name = "Level");
+
 	void update(float dt)  override;
 	void init()  override;
 	void draw()  override;
+
+	void checkCollision();
+	void checkObjects();
 	~Level();
 
 };

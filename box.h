@@ -15,8 +15,8 @@ struct Box
     */
     bool intersect(Box& other)
     {
-        return (fabs(m_pos_x - other.m_pos_x) * 2.0f < (m_width + other.m_width)) &&
-            (fabs(m_pos_y - other.m_pos_y) * 2.0f < (m_height + other.m_height));
+        return (fabs(m_pos_x - other.m_pos_x) * 2.5f < (m_width + other.m_width)) &&
+            (fabs(m_pos_y - other.m_pos_y) * 2.5f < (m_height + other.m_height));
     }
 
     /** Detects an intersection when this Box is "above" (smaller y values) a target box (other)
@@ -50,7 +50,7 @@ struct Box
             return std::min<float>(0.0f, other.m_pos_x - (other.m_width / 2.0f) - m_pos_x - (m_width / 2.0f));
     }
 
-    /** Default ctor
+    /** Default constructor
     */
     Box() {}
 

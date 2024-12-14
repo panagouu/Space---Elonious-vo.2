@@ -8,7 +8,7 @@ class Weapon : public GameObject, public Box
 {
     graphics::Brush m_brush_weapon;
 
-    const float velocity = 8.0f;
+    const float velocity = 12.0f;
 
     public:
 
