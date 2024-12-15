@@ -19,7 +19,7 @@ void Meteorite::update(float dt)
 void Meteorite::init()
 {
 	/* Generate random numbers for the coordinates x and y of the weapons */
-	m_pos_x = 2 * (m_state->getCanvasWidth()) + 5;
+	m_pos_x = 6 * (m_state->getCanvasWidth()) + 5;
 	m_pos_y = m_state->getCanvasHeight() * rand() / (float)RAND_MAX;
 
 	/* Generate random numbers for the size and the rotation of the weapons */

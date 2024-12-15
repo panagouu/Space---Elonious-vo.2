@@ -7,9 +7,12 @@ class GameState
 {
 	typedef enum {Entry_Level, Level1, Level2, Level3, Failure_Level, Victory_Level} m_level;
 	std::string m_asset_path = "assets\\";
+	std::string sound;
+	std::string music;
 
 	float m_canvas_width = 12.0f;
 	float m_canvas_height = 8.0f;
+	unsigned int score = 0;
 
 	m_level level;
 	static GameState* m_unique_instance;

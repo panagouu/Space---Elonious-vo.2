@@ -33,7 +33,7 @@ public:
 
     void drawHealth();
     void drawScore();
-    void checkCollision();
+    void updateScore(unsigned short new_score) { total_score = new_score; }
 
     float getX();
     float getY();

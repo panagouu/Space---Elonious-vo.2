@@ -27,7 +27,7 @@ void Player::update(float dt)
 
 	/* Restrict the player from going outside the background */
 	if (m_pos_x < 0) { m_pos_x = 0; }
-	//if (m_pos_x > 2*m_state->getCanvasWidth()) { m_pos_x = 2 * m_state->getCanvasWidth(); }
+	if (m_pos_x > 6*m_state->getCanvasWidth()) { m_pos_x = 6 * m_state->getCanvasWidth(); }
 
 	if (m_pos_y < 0) { m_pos_y = 0; }
 	if (m_pos_y > m_state->getCanvasHeight()) { m_pos_y = m_state->getCanvasHeight(); }

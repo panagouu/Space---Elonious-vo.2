@@ -10,7 +10,7 @@ void Star::update(float dt)
 void Star::init()
 {
 	/* Generate random numbers for the coordinates x and y of the stars */
-	m_pos_x = rand() / (float)RAND_MAX * 2 * m_state->getCanvasWidth();
+	m_pos_x = rand() / (float)RAND_MAX * 6 * m_state->getCanvasWidth();
 	m_pos_y = rand() / (float)RAND_MAX * m_state->getCanvasHeight();
 
 	/* Brush of the star */

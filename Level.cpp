@@ -109,6 +109,7 @@ void Level::draw()
 	float offset_y = m_state->m_global_offset_y + h / 2.0f;
 
 	graphics::drawRect(offset_x, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
+	graphics::drawRect(offset_x + w*4.0f, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
 
 	if (m_state->getPlayer()->isActive())
 	{
@@ -183,8 +184,6 @@ void Level::checkCollision()
 
 					m_state->getPlayer()->total_score = m_state->getPlayer()->total_score + 20;
 					weapon->m_active = false;
-
-					std::cout << "score: " << m_state->getPlayer()->total_score;
 				}
 			}
 			else {

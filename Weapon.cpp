@@ -28,7 +28,7 @@ void Weapon::update(float dt)
 	float delta_time =  dt / 1000.0f;
 	m_pos_x += delta_time * velocity;
 
-	if (m_pos_x > 3 * m_state->getCanvasWidth()) { m_active = false; }
+	if (m_pos_x > 6 * m_state->getCanvasWidth() + 2.0f) { m_active = false; }
 }
 
 void Weapon::activate()
