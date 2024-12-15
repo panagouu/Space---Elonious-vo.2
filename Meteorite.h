@@ -10,8 +10,9 @@ class Meteorite : public GameObject, public Box
     graphics::Brush m_brush_meteorite;
     std::vector<std::string> m_sprites;
 
-    const float velocity = 3.0f;
-    bool is_destroyed = false;
+    const float velocity = 3.5f;
+    float size;
+    float rotation;
 
 public:
 
@@ -22,7 +23,6 @@ public:
     void init() override;
     void draw() override;
 
-    bool isDestroyed() const { return is_destroyed; }
     Meteorite(std::string name) :GameObject(name) {}
 
 protected:

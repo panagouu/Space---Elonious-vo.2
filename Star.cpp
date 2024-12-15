@@ -1,6 +1,6 @@
 #include "Star.h"
 #include "GameState.h"
-#include <ctime>  
+#include <random>  
 #include <iostream>
 
 void Star::update(float dt)
@@ -10,11 +10,8 @@ void Star::update(float dt)
 void Star::init()
 {
 	/* Generate random numbers for the coordinates x and y of the stars */
-	float random_width = static_cast<float>(std::rand() % (2 * (int)m_state->getCanvasWidth() + 1));
-	float random_height = static_cast<float>(std::rand() % ((int)m_state->getCanvasHeight() + 1));
-	
-	m_pos_x = random_width;
-	m_pos_y = random_height;
+	m_pos_x = rand() / (float)RAND_MAX * 2 * m_state->getCanvasWidth();
+	m_pos_y = rand() / (float)RAND_MAX * m_state->getCanvasHeight();
 
 	/* Brush of the star */
 	m_brush_star.fill_opacity = 1.0f;

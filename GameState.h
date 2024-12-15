@@ -5,19 +5,29 @@
 
 class GameState
 {
-private: 
-
+	typedef enum {Entry_Level, Level1, Level2, Level3, Failure_Level, Victory_Level} m_level;
 	std::string m_asset_path = "assets\\";
 
 	float m_canvas_width = 12.0f;
 	float m_canvas_height = 8.0f;
 
+	m_level level;
 	static GameState* m_unique_instance;
 
 	GameState();
 
 	class Player * m_player = 0; 
 	class Level* m_current_level = 0;
+
+	void updateStartScreen(float dt);
+	void updateGameScreen(float dt);
+	void updateFailureScreen(float dt);
+	void updateVictoryScreen(float dt);
+
+	void drawStartScreen();
+	void drawGameScreen();
+	void drawFailureScreen();
+	void drawVictoryScreen();
 
 public:
 

@@ -10,7 +10,7 @@ void Player::update(float dt)
 {
 	if (current_health == 0) { m_active = false; }
 
-	float delta_time = dt / 1000.0f;
+	float delta_time =  dt / 1000.0f;
 	const float velocity = 10.f; 
 
 	/* Change the x and the y variables of the player */
@@ -36,6 +36,7 @@ void Player::update(float dt)
 	m_state-> m_global_offset_x = m_state-> getCanvasWidth() / 2.0f - m_pos_x;
 	m_state-> m_global_offset_y = m_state-> getCanvasHeight() / 2.0f - m_pos_y;
 
+	drawScore();
 	GameObject::update(dt);
 }
 

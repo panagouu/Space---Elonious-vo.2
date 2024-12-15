@@ -76,9 +76,6 @@ void Level::init()
 	m_brush_back.outline_opacity = 0.0f;
 	m_brush_back.texture = m_state-> getFullAssetPath("background4.png");
 
-	//std::string music = m_state->getAssetDir() + "symphonic-metal.mp3";
-	//graphics::playMusic(music, 0.5, true);
-
 	/* Create 5 stars for when the player loses lives and wants to regain them */
 	Star* star = 0;
 	for (int i = 0; i < 5; i++)
@@ -117,6 +114,7 @@ void Level::draw()
 	{
 		m_state->getPlayer()->draw();
 		m_state->getPlayer()->drawHealth();
+		m_state->getPlayer()->drawScore();
 	}
 	
 	for (auto p : m_static_objects)
@@ -146,7 +144,6 @@ void Level::checkCollision()
 			{
 				m_state->getPlayer()->current_health--;
 				meteorite->has_collided = true;
-				std::cout << "h: " << m_state->getPlayer()->current_health;
 
 				m_state->getPlayer()->m_pos_y += m_state->getPlayer()->intersectDown(*meteorite);
 				m_state->getPlayer()->m_pos_x += m_state->getPlayer()->intersectSideways(*meteorite);
@@ -170,8 +167,6 @@ void Level::checkCollision()
 
 				std::string sound = m_state->getAssetDir() + "winning_health.wav";
 				graphics::playSound(sound, 3, false);
-
-				std::cout << "health: " << m_state->getPlayer()->current_health;
 			}
 
 		}
@@ -191,7 +186,6 @@ void Level::checkCollision()
 
 					std::cout << "score: " << m_state->getPlayer()->total_score;
 				}
-				
 			}
 			else {
 				meteorite->has_collided = false;
