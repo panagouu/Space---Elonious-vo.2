@@ -10,16 +10,14 @@ class Meteorite : public GameObject, public Box
     graphics::Brush m_brush_meteorite;
     std::vector<std::string> m_sprites;
 
-    const float velocity = 3.0f;
-    const float m_gravity = 10.0f;
-    const float m_accel_vertical = 200.0f;
-    const float m_accel_horizontal = 40.0f;
-    const float m_max_velocity = 10.0f;
+    const float velocity = 6.0f;
+    float size;
+    float rotation;
 
 public:
 
-    float m_vx = 0.0f;
-    float m_vy = 0.0f;
+    unsigned short current_health = 2;
+    bool has_collided = false;
 
     void update(float dt) override;
     void init() override;

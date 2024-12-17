@@ -1,6 +1,8 @@
 #pragma once
+#include "util.h"
 #include <math.h>
 #include <algorithm>
+#include <sgg/graphics.h>
 
 struct Box
 {
@@ -9,14 +11,24 @@ struct Box
     float m_width = 1.0f;
     float m_height = 1.0f;
 
+    graphics::Brush m_brush_box;
+
+    void drawBox()
+    {
+        m_brush_box.fill_opacity = 0.3f;
+        SETCOLOR(m_brush_box.fill_color, 0.1f, 0.1f, 1.0f);
+        SETCOLOR(m_brush_box.outline_color, 1.0f, 1.0f, 1.0f);
+        graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush_box);
+    }
+
     /** Detects intersection (overlap) between this Box and another Box instance.
     *   \param other is a reference to another Box instance to check for collision with
     *   \return true if the two boxes overlap
     */
     bool intersect(Box& other)
     {
-        return (fabs(m_pos_x - other.m_pos_x) * 2.0f < (m_width + other.m_width)) &&
-            (fabs(m_pos_y - other.m_pos_y) * 2.0f < (m_height + other.m_height));
+        return (fabs(m_pos_x - other.m_pos_x) * 2.5f < (m_width + other.m_width)) &&
+            (fabs(m_pos_y - other.m_pos_y) * 2.5f < (m_height + other.m_height));
     }
 
     /** Detects an intersection when this Box is "above" (smaller y values) a target box (other)
@@ -50,7 +62,7 @@ struct Box
             return std::min<float>(0.0f, other.m_pos_x - (other.m_width / 2.0f) - m_pos_x - (m_width / 2.0f));
     }
 
-    /** Default ctor
+    /** Default constructor
     */
     Box() {}
 

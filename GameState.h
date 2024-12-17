@@ -5,24 +5,35 @@
 
 class GameState
 {
-private: 
-
+	typedef enum {Entry_Level, Level1, Level2, Level3, Failure_Level, Victory_Level} m_level;
 	std::string m_asset_path = "assets\\";
+	std::string sound;
+	std::string music;
 
 	float m_canvas_width = 12.0f;
 	float m_canvas_height = 8.0f;
+	unsigned int score = 0;
 
+	m_level level;
 	static GameState* m_unique_instance;
 
-	GameState(); // εδω να διαχειριζετε τον παιχτη και τα λεβελ
+	GameState();
 
-	class Player * m_player = 0; // κυκλική εξάρτηση και στα δύο 
+	class Player * m_player = 0; 
 	class Level* m_current_level = 0;
+
+	void updateStartScreen(float dt);
+	void updateGameScreen(float dt);
+	void updateFailureScreen(float dt);
+	void updateVictoryScreen(float dt);
+
+	void drawStartScreen();
+	void drawGameScreen();
+	void drawFailureScreen();
+	void drawVictoryScreen();
 
 public:
 
-	float m_global_offset_x = 0.0f; 
-	float m_global_offset_y = 0.0f;
 	bool m_debugging = false;
 
 	void init();

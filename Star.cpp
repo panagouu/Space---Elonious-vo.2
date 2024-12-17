@@ -1,24 +1,22 @@
 #include "Star.h"
 #include "GameState.h"
-#include <ctime>  
+#include <random>  
 #include <iostream>
 
 void Star::update(float dt)
 {
+	float delta_time = dt / 1000.0f;
+	const float velocity = 5.0f;
+
+	m_pos_x -= delta_time * velocity;
 }
 
 void Star::init()
 {
+
 	/* Generate random numbers for the coordinates x and y of the stars */
-
-	int random_width = (std::rand() % (3*(int)m_state->getCanvasWidth()) + 1) - (int)m_state->getCanvasWidth();
-	int random_height = std::rand() % ((int)m_state->getCanvasHeight() + 1);
-	
-	std::cout << "width: " << random_width;
-	std::cout << "heigth: " << random_height;
-
-	m_pos_x = random_width;
-	m_pos_y = random_height;
+	m_pos_x = rand() / (float)RAND_MAX * 30 * m_state->getCanvasWidth();
+	m_pos_y = rand() / (float)RAND_MAX * m_state->getCanvasHeight();
 
 	/* Brush of the star */
 	m_brush_star.fill_opacity = 1.0f;
@@ -28,8 +26,7 @@ void Star::init()
 
 void Star::draw()
 {
-	graphics::drawRect(m_state->m_global_offset_x + m_pos_x, m_state->m_global_offset_y + m_pos_y,
-					0.5f, 0.5f, m_brush_star);
+	graphics::drawRect(m_pos_x, m_pos_y, 0.5f, 0.5f, m_brush_star);
 
 	graphics::resetPose();
 }
