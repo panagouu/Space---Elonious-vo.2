@@ -1,15 +1,16 @@
 #pragma once
+
 #include <sgg/graphics.h>
 #include <string>
 
 #include "Box.h"
 #include "Gameobject.h"
 
-class Meteorite : public GameObject
+class Bomb : public GameObject
 {
-    graphics::Brush m_brush_meteorite;
+    graphics::Brush m_brush_bomb;
 
-    const float velocity = 6.0f;
+    const float velocity = 15.0f;
     float size;
     float rotation;
 
@@ -19,10 +20,9 @@ public:
     void init() override;
     void draw() override;
 
-    Meteorite(std::string name) :GameObject(name) {}
+    Bomb(std::string name) :GameObject(name) {}
 
 protected:
 
     void debugDraw();
 };
-

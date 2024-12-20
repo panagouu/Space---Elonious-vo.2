@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 
-class GameObject
+#include "Box.h"
+
+class GameObject: public Box 
 {
 	static int m_next_id; 
 
@@ -14,13 +16,16 @@ protected:
 
 public:
 
-	GameObject(const std::string& name = "");
 	bool m_active = true;
+	bool has_collided = false;
+	unsigned short current_health;
 
 	virtual void update(float dt) {}
 	virtual void init() {}
 	virtual void draw() {}
+
 	virtual ~GameObject() {}
 
 	bool isActive() { return m_active; }
+	GameObject(const std::string& name = "");
 };

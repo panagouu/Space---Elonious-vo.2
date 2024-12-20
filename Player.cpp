@@ -1,17 +1,16 @@
-#include "Player.h"
 #include <sgg/graphics.h>
+#include <iostream>
+
+#include "Player.h"
 #include "GameState.h"
 #include "util.h"
-#include <algorithm>
-#include <iostream>
-#include "Meteorite.h"
 
 void Player::update(float dt)
 {
 	if (current_health == 0) { m_active = false; }
 
 	float delta_time =  dt / 1000.0f;
-	const float velocity = 10.f; 
+	const float velocity = 6.0f; 
 
 	/* Change the x and the y variables of the player */
 	if (graphics::getKeyState(graphics::SCANCODE_A)) { m_pos_x -= delta_time * velocity; }
@@ -26,15 +25,11 @@ void Player::update(float dt)
 	if (graphics::getKeyState(graphics::SCANCODE_DOWN)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-down.png"); }
 
 	/* Restrict the player from going outside the background */
-	if (m_pos_x < 0) { m_pos_x = 0; }
-	if (m_pos_x > 6*m_state->getCanvasWidth()) { m_pos_x = 6 * m_state->getCanvasWidth(); }
+	if (m_pos_x < 0.5f) { m_pos_x = 0.5; }
+	if (m_pos_x > 11.5f) { m_pos_x = 11.5; }
 
-	if (m_pos_y < 0) { m_pos_y = 0; }
-	if (m_pos_y > m_state->getCanvasHeight()) { m_pos_y = m_state->getCanvasHeight(); }
-
-	/* Update the global offset variables according to the position of the player */
-	m_state-> m_global_offset_x = m_state-> getCanvasWidth() / 2.0f - m_pos_x;
-	m_state-> m_global_offset_y = m_state-> getCanvasHeight() / 2.0f - m_pos_y;
+	if (m_pos_y < 0.5) { m_pos_y = 0.5; }
+	if (m_pos_y > 7.5f) { m_pos_y = 7.5f; }
 
 	drawScore();
 	GameObject::update(dt);
@@ -42,8 +37,9 @@ void Player::update(float dt)
 
 void Player::init()
 {
-	m_pos_x = 5.0f;
-	m_pos_y = 5.0f;
+	m_pos_x = m_state->getCanvasWidth() / 2.0f;
+	m_pos_y = m_state->getCanvasHeight() / 2.0f;
+	current_health = 10;
 
 	m_state->m_global_offset_x = m_state->getCanvasWidth() / 2.0f - m_pos_x;
 	m_state->m_global_offset_y = m_state->getCanvasHeight() / 2.0f - m_pos_y;
@@ -56,7 +52,7 @@ void Player::init()
 
 void Player::draw()
 {
-	graphics::drawRect(m_state->getCanvasWidth() * 0.5f, m_state->getCanvasHeight() * 0.5f, 1.0f, 1.0f, m_brush_player);
+	graphics::drawRect(m_pos_x , m_pos_y, 1.0f, 1.0f, m_brush_player);
 	
 	graphics::resetPose();
 }

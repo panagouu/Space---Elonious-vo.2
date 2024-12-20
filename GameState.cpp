@@ -2,6 +2,7 @@
 #include "util.h"
 #include "Level.h"
 #include "Player.h"
+#include "Portal.h"
 #include "Meteorite.h"
 #include <iostream>
 
@@ -77,7 +78,7 @@ void GameState::drawGameScreen()
 
 	m_current_level->draw();
 
-	if (m_player->total_score > 100) 
+	if (!m_portal->isActive()) 
 	{ 
 		score += m_player->total_score;
 
@@ -86,6 +87,7 @@ void GameState::drawGameScreen()
 			sound = getAssetDir() + "level-completed.wav";
 			graphics::playSound(sound, 0.5f, false);
 
+			temp_total_time = graphics::getGlobalTime();
 			level = Level2;
 
 			m_current_level = new Level();
@@ -93,6 +95,9 @@ void GameState::drawGameScreen()
 
 			m_player = new Player("SpaceCraft");
 			m_player->init();
+
+			m_portal = new Portal("Alien");
+			m_portal->init();
 
 			music = getAssetDir() + "slavic-cinematic-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
@@ -109,6 +114,9 @@ void GameState::drawGameScreen()
 
 			m_player = new Player("SpaceCraft");
 			m_player->init();
+
+			m_portal = new Portal("Alien");
+			m_portal->init();
 
 			music = getAssetDir() + "slavic-cinematic-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
@@ -179,6 +187,8 @@ void GameState::init()
 	m_player = new Player("SpaceCraft");
 	m_player->init();
 
+	m_portal = new Portal("Alien");
+	m_portal->init();
 	graphics::preloadBitmaps(getAssetDir());
 }
 
