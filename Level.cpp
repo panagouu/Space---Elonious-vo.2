@@ -1,9 +1,12 @@
+#include <iostream>
+
 #include "Level.h"
 #include "GameState.h"
 #include "Player.h"
 #include "Meteorite.h"
+#include "Portal.h"
 #include "Weapon.h"
-#include <iostream>
+#include "Bomb.h"
 #include "Star.h"
 
 Level::Level(const std::string& name)
@@ -45,30 +48,32 @@ void Level::update(float dt)
 	float delta_time = dt / 1000.0f;
 	const float velocity = 5.0f;
 
-	/* Upade x position for background & distance covered by current background */
-	offset_x -= delta_time * velocity;
-	bkgnd_dist += delta_time * velocity;
+	if (graphics::getGlobalTime() - m_state->getTotalTime() <= 30000) {
+		/* Upade x position for background & distance covered by current background */
+		offset_x -= delta_time * velocity;
+		bkgnd_dist += delta_time * velocity;
 
-	/* If current background has cover a distance equal to its width
-		print a new background */
-	if (bkgnd_dist >= m_state->getCanvasWidth() * 4.0f)
-	{
-		/* Background distance starts counting from 0 */
-		bkgnd_dist = 0;
+		/* If current background has cover a distance equal to its width
+			print a new background */
+		if (bkgnd_dist >= m_state->getCanvasWidth() * 4.0f)
+		{
+			/* Background distance starts counting from 0 */
+			bkgnd_dist = 0;
 
-		switch (flag) {
-		case 0:
-			x0 = x2 + m_state->getCanvasWidth() * 4;
-			flag = 1;
-			break;
-		case 1:
-			x1 = x0 + m_state->getCanvasWidth() * 4;
-			flag = 2;
-			break;
-		case 2:
-			x2 = x1 + m_state->getCanvasWidth() * 4;
-			flag = 0;
-			break;
+			switch (flag) {
+			case 0:
+				x0 = x2 + m_state->getCanvasWidth() * 4;
+				flag = 1;
+				break;
+			case 1:
+				x1 = x0 + m_state->getCanvasWidth() * 4;
+				flag = 2;
+				break;
+			case 2:
+				x2 = x1 + m_state->getCanvasWidth() * 4;
+				flag = 0;
+				break;
+			}
 		}
 	}
 
@@ -79,6 +84,8 @@ void Level::update(float dt)
 	{
 		m_state->getPlayer()->update(dt);
 	}
+
+	createEnemy();
 
 	/* Create an object Weapon and add it to the dynamic objects */
 	if (graphics::getKeyState(graphics::SCANCODE_SPACE))
@@ -101,25 +108,8 @@ void Level::update(float dt)
 		pressed_space = false;
 	}
 
-	/* An h lista einai adeia h einai h stigmh tou epomenou antikeimenou
-		ftiakse enan metewrith, prosthese ton sth lista kai sxediase ton */
-	/* Update Meteorite */
-	if (time_passed >= m_next_met)
-	{
-		Meteorite* m = new Meteorite("");
-		m_meteorite_objects.push_back(m);
-		m->init();
-
-		/* Ypologise enan tuxaio xrono pou prepei na perasei mexri na 
-			emfanistei o epomenos metewriths */
-		time_passed = 0;
-		m_next_met = static_cast < float>(900 + (rand() % 2001));
-	}	
-
-	std::cout << m_meteorite_objects.size() << std::endl; // PRINT FOR DEBUGGING
-
 	/* Update the elements of the dynamic_objects vector that are active  */
-	for (auto p : m_meteorite_objects)
+	for (auto p : m_enemy_objects)
 	{
 		if (p) { p->update(dt); }
 	}
@@ -129,7 +119,6 @@ void Level::update(float dt)
 		if (p) { p->update(dt); }
 	}
 
-	/* Update static objects */
 	for (auto p : m_static_objects)
 	{
 		if (p) { p->update(dt); }
@@ -146,11 +135,9 @@ void Level::draw()
 	float w = m_state-> getCanvasWidth();
 	float h = m_state-> getCanvasHeight();
 
-	graphics::drawRect(offset_x + x0, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
-	graphics::drawRect(offset_x + x1, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
-	graphics::drawRect(offset_x + x2, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
-
-	if (m_state->getPlayer()->isActive())
+	/* Create 10 stars for when the player loses lives and wants to regain them */
+	Star* star = 0;
+	for (int i = 0; i < 10; i++)
 	{
 		m_state->getPlayer()->draw();
 		m_state->getPlayer()->drawBox();	// drawBox() -> FOR DEBUGGING
@@ -174,10 +161,75 @@ void Level::draw()
 	}
 }
 
+	for (auto p : m_enemy_objects)
+	{
+		if (p) { p->init(); }
+	}
+
+	for (auto p : m_weapon_objects)
+	{
+		if (p) { p->init(); }
+	}
+}
+
+void Level::draw()
+{
+	float w = m_state->getCanvasWidth();
+	float h = m_state->getCanvasHeight();
+
+	graphics::drawRect(offset_x + x0, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
+	graphics::drawRect(offset_x + x1, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
+	graphics::drawRect(offset_x + x2, offset_y, w * 4.0f, h * 2.0f, m_brush_back);
+
+	if (m_state->getPlayer()->isActive())
+	{
+		m_state->getPlayer()->draw();
+		m_state->getPlayer()->drawHealth();
+		m_state->getPlayer()->drawScore();
+	}
+
+	if (m_state->getLevel() == 1)
+	{
+		if (graphics::getGlobalTime() > 30000 && m_state->getPortal()->isActive())
+		{
+			m_state->getPortal()->draw();
+		}
+	}
+	else if (m_state->getLevel() == 2 )
+	{
+		if (graphics::getGlobalTime() - m_state->getTotalTime() > 30000 && m_state->getPortal()->isActive())
+		{
+			m_state->getPortal()->draw();
+		}
+	}
+
+	for (GameObject* p : m_meteorite_objects)
+	{
+		if (p && !p->isActive()) 
+		{
+			/* delete the object p from the vector m_meteorite_objects */
+			m_meteorite_objects.erase(std::remove(m_meteorite_objects.begin(), m_meteorite_objects.end(), p), m_meteorite_objects.end());
+
+			delete p;
+			p = nullptr;
+		}
+	}
+
+	for (auto p : m_enemy_objects)
+	{
+		if (p) { p->draw(); }
+	}
+
+	for (auto p : m_weapon_objects)
+	{
+		if (p) { p->draw(); }
+	}
+}
+
 void Level::checkCollision()
 {
 	/* Check if the player collides with a Meteorite and reduce his health by one */
-	for (auto& meteorite : m_meteorite_objects)
+	for (auto& meteorite : m_enemy_objects)
 	{
 		if (m_state->getPlayer()->intersect(*meteorite))
 		{
@@ -185,13 +237,15 @@ void Level::checkCollision()
 			{
 				m_state->getPlayer()->current_health--;
 				meteorite->has_collided = true;
+				meteorite->m_active = false;
 
-				m_state->getPlayer()->m_pos_y += m_state->getPlayer()->intersectDown(*meteorite);
-				m_state->getPlayer()->m_pos_x += m_state->getPlayer()->intersectSideways(*meteorite);
+				//m_state->getPlayer()->m_pos_y += m_state->getPlayer()->intersectDown(*meteorite);
+				//m_state->getPlayer()->m_pos_x += m_state->getPlayer()->intersectSideways(*meteorite);
 			}
 		}
 		else {
 			meteorite->has_collided = false;
+			
 		}
 	}
 
@@ -213,8 +267,8 @@ void Level::checkCollision()
 	}
 
 	/* Check if an object Weapon hits an object Meteorite */
-	for (auto* weapon : m_weapon_objects) {
-		for (auto* meteorite : m_meteorite_objects) {
+	for (auto& weapon : m_weapon_objects) {
+		for (auto& meteorite : m_enemy_objects) {
 			if (weapon->intersect(*meteorite)) {
 				if (!meteorite->has_collided)
 				{
@@ -229,6 +283,12 @@ void Level::checkCollision()
 				meteorite->has_collided = false;
 			}
 		}
+	}
+
+	/* Check if the player collides with the Portal and move the player to the next level */
+	if (m_state->getPlayer()->intersect(*m_state->getPortal()))
+	{
+		m_state->getPortal()->m_active = false;
 	}
 }
 
@@ -246,12 +306,12 @@ void Level::checkObjects()
 		}
 	}
 
-	for (GameObject* p : m_meteorite_objects)
+	for (GameObject* p : m_enemy_objects)
 	{
 		if (p && !p->isActive()) 
 		{
 			/* delete the object p from the vector m_meteorite_objects */
-			m_meteorite_objects.erase(std::remove(m_meteorite_objects.begin(), m_meteorite_objects.end(), p), m_meteorite_objects.end());
+			m_enemy_objects.erase(std::remove(m_enemy_objects.begin(), m_enemy_objects.end(), p), m_enemy_objects.end());
 
 			delete p;
 			p = nullptr;
@@ -271,6 +331,55 @@ void Level::checkObjects()
 	}
 }
 
+void Level::createEnemy()
+{
+	if (m_state->getLevel() == 1)
+	{
+		/* Create an object Meteorite, add it to the enemy vector */
+		if (time_passed >= m_next_met)
+		{
+			Meteorite* m = new Meteorite("");
+			m_enemy_objects.push_back(m);
+			m->init();
+
+			/* Calculate a random time that need to pass before the next one appears */
+			time_passed = 0;
+			m_next_met = static_cast <float>(900 + (rand() % 2001));
+		}
+	}
+	else if (m_state->getLevel() == 2)
+	{
+		/* Create an object Bomb, add it to the enemy vector */
+		if (time_passed >= m_next_met)
+		{
+			Bomb* b = new Bomb("");
+			m_enemy_objects.push_back(b);
+			b->init();
+
+			std::string sound = m_state->getAssetDir() + "bomb.wav";
+			graphics::playSound(sound, 3, false);
+
+			/* Calculate a random time that need to pass before the next one appears */
+			time_passed = 0;
+			m_next_met = static_cast <float>(900 + (rand() % 2001));
+		}
+	}
+	else if (m_state->getLevel() == 3)
+	{
+		/* Create an object Bomb, add it to the enemy vector */
+		if (time_passed >= m_next_met)
+		{
+			Bomb* b = new Bomb("");
+			m_enemy_objects.push_back(b);
+			b->init();
+
+			/* Calculate a random time that need to pass before the next one appears */
+			time_passed = 0;
+			m_next_met = static_cast <float>(900 + (rand() % 2001));
+		}
+	}
+}
+
 Level::~Level()
 {
 	for (auto p : m_static_objects)
@@ -278,7 +387,7 @@ Level::~Level()
 		if (p) { delete p; }
 	}
 
-	for (auto p : m_meteorite_objects)
+	for (auto p : m_enemy_objects)
 	{
 		if (p) { delete p; }
 	}

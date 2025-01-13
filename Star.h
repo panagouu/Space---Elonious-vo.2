@@ -1,10 +1,11 @@
 #pragma once
-#include "box.h"
-#include "gameobject.h"
 #include <sgg/graphics.h>
 #include <string>
 
-class Star : public GameObject, public Box
+#include "Gameobject.h"
+#include "Box.h"
+
+class Star : public GameObject
 {
     graphics::Brush m_brush_star;
 

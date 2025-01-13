@@ -12,6 +12,7 @@ class GameState
 
 	float m_canvas_width = 12.0f;
 	float m_canvas_height = 8.0f;
+	float temp_total_time = 0.0f;
 	unsigned int score = 0;
 
 	m_level level;
@@ -20,6 +21,7 @@ class GameState
 	GameState();
 
 	class Player * m_player = 0; 
+	class Portal* m_portal = 0;
 	class Level* m_current_level = 0;
 
 	void updateStartScreen(float dt);
@@ -45,9 +47,14 @@ public:
 
 	float getCanvasWidth() { return m_canvas_width; }
 	float getCanvasHeight() { return m_canvas_height; }
+	float getTotalTime() { return temp_total_time; }
 
 	std::string getAssetDir();
 	std::string getFullAssetPath(const std::string& asset);
 
 	class Player* getPlayer() { return m_player; }
+	class Portal* getPortal() { return m_portal; }
+
+
+	m_level getLevel() { return level; }
 };

@@ -1,9 +1,9 @@
+#include <sgg/graphics.h>
+#include <iostream>
+#include <random>
+
 #include "GameState.h"
 #include "Meteorite.h"
-#include "util.h"
-#include <iostream>
-#include <sgg/graphics.h>
-#include <random>
 
 void Meteorite::update(float dt)
 {
@@ -13,20 +13,20 @@ void Meteorite::update(float dt)
 	rotation += 0.4f * dt;
 	rotation = fmodf(rotation, 360);
 
-	if (m_pos_x < -5.0f || current_health == 0 ) { m_active = false; }
+	if (m_pos_x < 0 || current_health == 0 ) { m_active = false; }
 }
 
 void Meteorite::init()
 {
 	/* Generate random numbers for the coordinates x and y of the weapons */
 	m_pos_x = m_state->getCanvasWidth() + 2.0f;
-	m_pos_y = ((float)rand() / RAND_MAX) * ((m_state->getCanvasHeight() - 0.5f) - 0.5f) + 0.5f;
+	m_pos_y = ((float)rand() / RAND_MAX) * (m_state->getCanvasHeight() - 0.5f);
 
 	/* Generate random numbers for the size and the rotation of the weapons */
 	size = 0.5 + rand() / (float)RAND_MAX;
 	rotation = 360 * rand() / (float)RAND_MAX;
 
-	/* Initially set the width and the height for the meteorite's box */
+	current_health = 2;
 	m_width = size;
 	m_height = size;
 
@@ -40,7 +40,7 @@ void Meteorite::init()
 void Meteorite::draw()
 {
 	graphics::setOrientation(rotation);
-	graphics::drawRect(m_pos_x, m_pos_y, size, size, m_brush_meteorite);
+	graphics::drawRect( m_pos_x, m_pos_y, size, size, m_brush_meteorite);
 
 	graphics::resetPose();
 }
