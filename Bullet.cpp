@@ -13,7 +13,7 @@ void Bullet::init()
 		m_height = 0.5f;
 
 		velocity = 12.0f;
-		dynamic = 1;
+		dynamic = 2;
 
 		m_brush_bullet.fill_opacity = 1.0f;
 		m_brush_bullet.outline_opacity = 0.0f;
