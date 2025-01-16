@@ -1,6 +1,8 @@
 #include "GameState.h"
 #include "util.h"
+#include "Elon.h"
 #include "Level.h"
+#include "Button.h"
 #include "Player.h"
 #include "Portal.h"
 #include "Meteorite.h"
@@ -10,10 +12,59 @@ GameState::GameState()
 {
 }
 
+void GameState::init()
+{
+	level = Entry_Level;
+
+	graphics::setFont(std::string(m_asset_path) + "Bruce.ttf");
+	music = getAssetDir() + "futuristic-space.wav";
+	graphics::playMusic(music, 0.5f, true, 2000);
+
+	m_current_level = new Level();
+	m_current_level->init();
+
+	m_player = new Player("SpaceCraft");
+	m_player->init();
+
+	m_portal = new Portal("Alien");
+
+	graphics::preloadBitmaps(getAssetDir());
+}
+
+void GameState::update(float dt)
+{
+	if (level == Entry_Level)
+	{
+		updateStartScreen(dt);
+	}
+	else if (level == Level1)
+	{
+		updateGameScreen(dt);
+	}
+	else if (level == Level2)
+	{
+		updateGameScreen(dt);
+	}
+	else if (level == Level3)
+	{
+		updateGameScreen(dt);
+	}
+	else if (level == Failure_Level)
+	{
+		updateFailureScreen(dt);
+	}
+	else if (level == Victory_Level)
+	{
+		updateVictoryScreen(dt);
+	}
+}
+
 void GameState::updateStartScreen(float dt)
 {
 	if (graphics::getKeyState(graphics::SCANCODE_RETURN))
 	{
+		temp_total_time = graphics::getGlobalTime();
+
 		level = Level1;
 
 		music = getAssetDir() + "slavic-cinematic-metal.mp3";
@@ -71,14 +122,15 @@ void GameState::drawGameScreen()
 	if (!m_current_level) { return; }
 	if (m_player->m_active == false) 
 	{ 
-		sound = getAssetDir() + "fail-jingle.mp3";
-		graphics::playSound(sound, 0.5f, false);
-		level = Failure_Level;  
+		music = getAssetDir() + "space.mp3";
+		graphics::playMusic(music, 2.0f, true, 2000);
+
+		createButtons();
+		level = Failure_Level; 
+		return;
 	}
 
-	m_current_level->draw();
-
-	if (!m_portal->isActive()) 
+	if (m_portal && !m_portal->isActive()) 
 	{ 
 		score += m_player->total_score;
 
@@ -97,7 +149,6 @@ void GameState::drawGameScreen()
 			m_player->init();
 
 			m_portal = new Portal("Alien");
-			m_portal->init();
 
 			music = getAssetDir() + "slavic-cinematic-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
@@ -107,6 +158,7 @@ void GameState::drawGameScreen()
 			sound = getAssetDir() + "level-completed.wav";
 			graphics::playSound(sound, 0.5f, false);
 
+			unsigned short new_health = m_player->getHealth();
 			level = Level3;
 
 			m_current_level = new Level();
@@ -115,21 +167,32 @@ void GameState::drawGameScreen()
 			m_player = new Player("SpaceCraft");
 			m_player->init();
 
-			m_portal = new Portal("Alien");
-			m_portal->init();
+			m_player->updateHealth(new_health);
 
-			music = getAssetDir() + "slavic-cinematic-metal.mp3";
+			m_elon = new Elon("Elon");
+			m_elon->init();
+
+			sound = getAssetDir() + "evil-laugh.mp3";
+			graphics::playSound(sound, 1.5f, true);
+
+			music = getAssetDir() + "thrash-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
 		}
-		else if (level == Level3)
-		{
-			graphics::stopMusic();
-			level = Victory_Level;
-
-			sound = getAssetDir() + "level-completed.wav";
-			graphics::playSound(sound, 0.5f, false);
-		} 
+		 
 	}
+
+	if (level == Level3 && !m_elon->isActive())
+	{
+		graphics::stopMusic();
+		level = Victory_Level;
+
+		sound = getAssetDir() + "level-completed.wav";
+		graphics::playSound(sound, 0.5f, false);
+
+		return;
+	}
+
+	m_current_level->draw();
 }
 
 void GameState::drawFailureScreen()
@@ -139,6 +202,9 @@ void GameState::drawFailureScreen()
 
 	brush_background.outline_opacity = 0.0f;
 	brush_background.texture = getFullAssetPath("background4.png");
+
+	left->draw();
+	right->draw();
 
 	brush_text.fill_opacity = 1.0f;
 	brush_text.outline_opacity = 0.0f;
@@ -173,23 +239,19 @@ void GameState::drawVictoryScreen()
 	graphics::drawRect(6.0f, 4.0f, 12.0f, 8.0f, brush_background);
 }
 
-void GameState::init()
+void GameState::createButtons()
 {
-	level = Entry_Level;
+	right = new Button("Right");
+	left = new Button("Left");
 
-	graphics::setFont(std::string(m_asset_path) + "Bruce.ttf");
-	music = getAssetDir() + "futuristic-space.wav";
-	graphics::playMusic(music, 0.5f, true, 2000);
+	right->init();
+	left->init();
 
-	m_current_level = new Level();
-	m_current_level->init();
+	right->m_pos_x = 4.5f;
+	right->m_pos_y = 6.0f;
 
-	m_player = new Player("SpaceCraft");
-	m_player->init();
-
-	m_portal = new Portal("Alien");
-	m_portal->init();
-	graphics::preloadBitmaps(getAssetDir());
+	left->m_pos_x = 6.5f;
+	left->m_pos_y = 6.0f;
 }
 
 void GameState::draw()
@@ -220,34 +282,6 @@ void GameState::draw()
 	}
 }
 
-void GameState::update(float dt)
-{
-	if (level == Entry_Level)
-	{
-		updateStartScreen(dt);
-	}
-	else if (level == Level1)
-	{
-		updateGameScreen(dt);
-	}
-	else if (level == Level2)
-	{
-		updateGameScreen(dt);
-	}
-	else if (level == Level3)
-	{
-		updateGameScreen(dt);
-	}
-	else if (level == Failure_Level)
-	{
-		updateFailureScreen(dt);
-	}
-	else if (level == Victory_Level)
-	{
-		updateVictoryScreen(dt);
-	}
-}
-
 GameState* GameState::getInstance()
 {
 	if (m_unique_instance == nullptr) {  m_unique_instance = new GameState(); }
@@ -273,8 +307,3 @@ std::string GameState::getFullAssetPath(const std::string& asset)
 }
 
 GameState* GameState:: m_unique_instance = nullptr;
-
-
-
-
-

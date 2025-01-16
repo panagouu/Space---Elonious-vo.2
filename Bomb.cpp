@@ -20,6 +20,9 @@ void Bomb::init()
 	m_pos_y = ((float)rand() / RAND_MAX) * (m_state->getCanvasHeight() - 0.5f);
 
 	current_health = 4;
+	points = 15;
+	dynamic = 2;
+
 	m_width = 1.8f;
 	m_height = 1;
 

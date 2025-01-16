@@ -1,0 +1,24 @@
+#include "Button.h"
+#include "GameState.h"
+
+void Button::update(float dt)
+{
+}
+
+void Button::init()
+{
+	m_width = 1.5f;
+	m_height = 1.5f;
+
+	/* Brush of the star */
+	m_brush_button.fill_opacity = 1.0f;
+	m_brush_button.outline_opacity = 0.0f;
+	m_brush_button.texture = m_state->getFullAssetPath("button.png");
+}
+
+void Button::draw()
+{
+	graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush_button);
+
+	graphics::resetPose();
+}

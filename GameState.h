@@ -6,7 +6,7 @@
 class GameState
 {
 	typedef enum {Entry_Level, Level1, Level2, Level3, Failure_Level, Victory_Level} m_level;
-	std::string m_asset_path = "assets\\";
+	std::string m_asset_path = "bin\\assets\\";
 	std::string sound;
 	std::string music;
 
@@ -22,7 +22,10 @@ class GameState
 
 	class Player * m_player = 0; 
 	class Portal* m_portal = 0;
+	class Elon* m_elon = 0;
 	class Level* m_current_level = 0;
+	class Button* left = 0;
+	class Button* right = 0;
 
 	void updateStartScreen(float dt);
 	void updateGameScreen(float dt);
@@ -34,8 +37,12 @@ class GameState
 	void drawFailureScreen();
 	void drawVictoryScreen();
 
+	void createButtons();
+
 public:
 
+	float m_global_offset_x = 0.0f; 
+	float m_global_offset_y = 0.0f;
 	bool m_debugging = false;
 
 	void init();
@@ -54,6 +61,7 @@ public:
 
 	class Player* getPlayer() { return m_player; }
 	class Portal* getPortal() { return m_portal; }
+	class Elon* getElon() { return m_elon; }
 
 
 	m_level getLevel() { return level; }

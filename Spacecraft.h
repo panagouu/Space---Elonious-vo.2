@@ -3,7 +3,6 @@
 #include <string>
 #include "Box.h"
 #include "GameObject.h"
-#include "Bullet.h"
 
 class Spacecraft : public GameObject
 {
@@ -12,12 +11,9 @@ class Spacecraft : public GameObject
     float velocity = 8.0f;
     float size = 0.8f;
     float rotation;
-    float sh_timer = 0.0f;
     unsigned int orient_point;
     unsigned float up_limit;
     unsigned float low_limit;
-
-    std::vector<Bullet*> bullets;
 
 public:
 

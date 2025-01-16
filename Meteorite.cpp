@@ -27,6 +27,9 @@ void Meteorite::init()
 	rotation = 360 * rand() / (float)RAND_MAX;
 
 	current_health = 2;
+	points = 10;
+	dynamic = 1;
+
 	m_width = size;
 	m_height = size;
 

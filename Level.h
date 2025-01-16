@@ -5,6 +5,7 @@
 #include "Meteorite.h"
 #include "GameState.h"
 #include "Weapon.h"
+#include "Bullet.h"
 #include "Star.h"
 
 class Level : public GameObject
@@ -24,8 +25,11 @@ class Level : public GameObject
 	float m_center_x = 5.0f;
 	float m_center_y = 5.0f;
 
-	float m_next_met = 0.0f;
-	float time_passed = 0.0f;
+	/* Variables for knowing when to create new Meteorite and Spacecraft objects */
+	float next_met = 900 + (rand() % 2001);
+	float next_spac = 1500 + (rand() % 2001);
+	float met_timer = 0.0f;
+	float spac_timer = 0.0f;
 
 	/* The variable pressed_space prevents multiple Weapon objects from being created when pressing space once */
 	bool pressed_space = false;
@@ -34,6 +38,7 @@ class Level : public GameObject
 	std::vector<Star*> m_static_objects;
 	std::vector<GameObject*> m_enemy_objects;
 	std::vector<Weapon*> m_weapon_objects;
+	std::vector<Bullet*> m_bullet_objects;
 
 	void checkCollision();
 	void checkObjects();

@@ -10,6 +10,8 @@ void Spacecraft::init()
 	current_health = 1;
 	points = 5;
 	dynamic = 2;
+	shoot_timer = 600.f;
+	t_reset_val = 600.f;
 
 	m_width = 0.7f;
 	m_height = 0.7f;
@@ -47,7 +49,9 @@ void Spacecraft::init()
 void Spacecraft::update(float dt)
 {
 	float delta_time = dt / 1000.0f;
-	m_pos_x -= delta_time * velocity / 2.0f;
+	m_pos_x -= delta_time * velocity / 1.5f;
+
+	shoot_timer -= dt;	// Update timer for next Bullet
 
 	/* If intstance has passed canvas limit or has no more health deactivate it */
 	if (m_pos_x < 0 || current_health == 0) { m_active = false; }
@@ -74,19 +78,6 @@ void Spacecraft::update(float dt)
 		}
 	}
 	
-	for (Bullet* b : bullets) {
-		b->update(dt);
-	}
-
-	sh_timer += dt;
-
-	if (sh_timer >= 500) {
-		Bullet* b = new Bullet("Spacecraft", m_pos_x - 0.5f, m_pos_y);
-		bullets.push_back(b);
-		b->init();
-
-		sh_timer = 0.0f;
-	}
 }
 
 void Spacecraft::draw()
@@ -94,12 +85,7 @@ void Spacecraft::draw()
 	graphics::setOrientation(rotation);
 	graphics::drawRect(m_pos_x, m_pos_y, size, size, m_brush_spacecraft);
 
-	for (Bullet* b : bullets) {
-		b->draw();
-	}
-
 	graphics::resetPose();
-
 }
 
 void Spacecraft::debugDraw()
