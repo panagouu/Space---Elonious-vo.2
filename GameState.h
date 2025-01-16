@@ -3,6 +3,12 @@
 #include <string>
 #include "sgg/graphics.h"
 
+/**
+ * The GameState class  generally holds the current state of the game. It is responsible for creating and switching levels. 
+ * It also creates some basic game objects, such as the player, the gates.
+ *
+ */
+
 class GameState
 {
 	typedef enum {Entry_Level, Level1, Level2, Level3, Failure_Level, Victory_Level} m_level;
@@ -22,7 +28,10 @@ class GameState
 
 	class Player * m_player = 0; 
 	class Portal* m_portal = 0;
+	class Elon* m_elon = 0;
 	class Level* m_current_level = 0;
+	class Button* left = 0;
+	class Button* right = 0;
 
 	void updateStartScreen(float dt);
 	void updateGameScreen(float dt);
@@ -33,6 +42,8 @@ class GameState
 	void drawGameScreen();
 	void drawFailureScreen();
 	void drawVictoryScreen();
+
+	void createButtons();
 
 public:
 
@@ -56,6 +67,7 @@ public:
 
 	class Player* getPlayer() { return m_player; }
 	class Portal* getPortal() { return m_portal; }
+	class Elon* getElon() { return m_elon; }
 
 
 	m_level getLevel() { return level; }

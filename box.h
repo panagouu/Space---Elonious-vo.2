@@ -5,7 +5,7 @@
 struct Box
 {
     float m_pos_x = 0.0f;
-    float m_pos_y = 0.0f;
+    float m_pos_y = -0.5f;
     float m_width = 1.0f;
     float m_height = 1.0f;
 

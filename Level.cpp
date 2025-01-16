@@ -1,11 +1,13 @@
 #include <iostream>
 
 #include "Level.h"
+#include "Elon.h"
 #include "GameState.h"
 #include "Player.h"
 #include "Meteorite.h"
 #include "Portal.h"
 #include "Weapon.h"
+#include "Bullet.h"
 #include "Bomb.h"
 #include "Star.h"
 
@@ -19,8 +21,8 @@ void Level::update(float dt)
 	float delta_time = dt / 1000.0f;
 	const float velocity = 5.0f;
 
-	if (graphics::getGlobalTime() - m_state->getTotalTime() <= 30000) {
-		/* Upade x position for background & distance covered by current background */
+	if (graphics::getGlobalTime() - m_state->getTotalTime() <= 30000 && m_state->getLevel() != 3) {
+		/* Update x position for background & distance covered by current background */
 		offset_x -= delta_time * velocity;
 		bkgnd_dist += delta_time * velocity;
 
@@ -49,6 +51,11 @@ void Level::update(float dt)
 	}
 
 	time_passed += dt; 
+
+	if (m_state->getLevel() == 3)
+	{
+		m_state->getElon()->update(dt);
+	}
 
 	if (m_state->getPlayer()->isActive())
 	{
@@ -89,6 +96,11 @@ void Level::update(float dt)
 		if (p) { p->update(dt); }
 	}
 
+	for (auto p : m_bullet_objects)
+	{
+		if (p) { p->update(dt); }
+	}
+
 	for (auto p : m_static_objects)
 	{
 		if (p) { p->update(dt); }
@@ -106,11 +118,14 @@ void Level::init()
 	m_brush_back.texture = m_state-> getFullAssetPath("background4.png");
 
 	/* Create 10 stars for when the player loses lives and wants to regain them */
-	Star* star = 0;
-	for (int i = 0; i < 10; i++)
+	if (m_state->getLevel() != 3)
 	{
-		star = new Star("star" + i);
-		m_static_objects.push_back(star);
+		Star* star = 0;
+		for (int i = 0; i < 10; i++)
+		{
+			star = new Star("star" + i);
+			m_static_objects.push_back(star);
+		}
 	}
 
 	for (auto p : m_static_objects) 
@@ -147,8 +162,9 @@ void Level::draw()
 
 	if (m_state->getLevel() == 1)
 	{
-		if (graphics::getGlobalTime() > 30000 && m_state->getPortal()->isActive())
+		if (graphics::getGlobalTime() - m_state->getTotalTime() > 30000 && m_state->getPortal()->isActive())
 		{
+			m_state->getPortal()->init();
 			m_state->getPortal()->draw();
 		}
 	}
@@ -156,8 +172,12 @@ void Level::draw()
 	{
 		if (graphics::getGlobalTime() - m_state->getTotalTime() > 30000 && m_state->getPortal()->isActive())
 		{
+			m_state->getPortal()->init();
 			m_state->getPortal()->draw();
 		}
+	} else 
+	{ 
+		m_state->getElon()->draw(); 
 	}
 
 	for (auto p : m_static_objects)
@@ -174,33 +194,35 @@ void Level::draw()
 	{
 		if (p) { p->draw(); }
 	}
+
+	for (auto p : m_bullet_objects)
+	{
+		if (p) { p->draw(); }
+	}
 }
 
 void Level::checkCollision()
 {
-	/* Check if the player collides with a Meteorite and reduce his health by one */
+	/* Check if the player collides with a Meteorite and reduce his health by the dynamic of meteorite */
 	for (auto& meteorite : m_enemy_objects)
 	{
 		if (m_state->getPlayer()->intersect(*meteorite))
 		{
 			if (!(meteorite->has_collided))
 			{
-				m_state->getPlayer()->current_health--;
+				m_state->getPlayer()->current_health -= meteorite->dynamic;
 				meteorite->has_collided = true;
 				meteorite->m_active = false;
-
-				//m_state->getPlayer()->m_pos_y += m_state->getPlayer()->intersectDown(*meteorite);
-				//m_state->getPlayer()->m_pos_x += m_state->getPlayer()->intersectSideways(*meteorite);
 			}
 		}
 		else {
 			meteorite->has_collided = false;
-			
+
 		}
 	}
 
 	/* Check if the player collides with a Star and increase his health by one, only if the player has less than 10 lives */
-	if (m_state->getPlayer()->current_health < 10) 
+	if (m_state->getPlayer()->current_health < 10)
 	{
 		for (auto& star : m_static_objects)
 		{
@@ -225,13 +247,41 @@ void Level::checkCollision()
 					meteorite->has_collided = true;
 					meteorite->current_health--;
 
-					m_state->getPlayer()->total_score = m_state->getPlayer()->total_score + 20;
+					m_state->getPlayer()->total_score += meteorite->points;
 					weapon->m_active = false;
 				}
 			}
 			else {
 				meteorite->has_collided = false;
 			}
+		}
+	}
+
+	/* Check if an object Weapon hits the object Elon */
+	for (auto& weapon : m_weapon_objects) {
+		if (m_state->getElon() && weapon->intersect(*m_state->getElon()))
+		{
+			m_state->getElon()->current_health--;
+
+			m_state->getPlayer()->total_score += m_state->getElon()->points;
+			weapon->m_active = false;
+
+		}
+	}
+
+	/* Check if an object Bullet hits the player */
+	for (auto& bullet : m_bullet_objects) {
+		if (bullet->intersect(*m_state->getPlayer()))
+		{
+			if (!bullet->has_collided)
+			{
+				bullet->has_collided = true;
+				bullet->m_active = false;
+				m_state->getPlayer()->current_health -= bullet->dynamic;
+			}
+		}
+		else { 
+			bullet->has_collided = false; 
 		}
 	}
 
@@ -260,7 +310,7 @@ void Level::checkObjects()
 	{
 		if (p && !p->isActive()) 
 		{
-			/* delete the object p from the vector m_meteorite_objects */
+			/* delete the object p from the vector m_enemy_objects */
 			m_enemy_objects.erase(std::remove(m_enemy_objects.begin(), m_enemy_objects.end(), p), m_enemy_objects.end());
 
 			delete p;
@@ -275,6 +325,18 @@ void Level::checkObjects()
 			/* delete the object p from the vector m_weapon_objects */
 			m_weapon_objects.erase(std::remove(m_weapon_objects.begin(), m_weapon_objects.end(), p), m_weapon_objects.end());
 			
+			delete p;
+			p = nullptr;
+		}
+	}
+
+	for (GameObject* p : m_bullet_objects)
+	{
+		if (p && !p->isActive())
+		{
+			/* delete the object p from the vector m_bullet_objects */
+			m_bullet_objects.erase(std::remove(m_bullet_objects.begin(), m_bullet_objects.end(), p), m_bullet_objects.end());
+
 			delete p;
 			p = nullptr;
 		}
@@ -319,13 +381,18 @@ void Level::createEnemy()
 		/* Create an object Bomb, add it to the enemy vector */
 		if (time_passed >= m_next_met)
 		{
-			Bomb* b = new Bomb("");
-			m_enemy_objects.push_back(b);
-			b->init();
+			Meteorite* m = new Meteorite("");
+			m_enemy_objects.push_back(m);
+			m->init();
+
+			Bullet* bullet = new Bullet("Bullet");
+			m_bullet_objects.push_back(bullet);
+
+			bullet->init();
 
 			/* Calculate a random time that need to pass before the next one appears */
 			time_passed = 0;
-			m_next_met = static_cast <float>(900 + (rand() % 2001));
+			m_next_met = static_cast <float>(900 + (rand() % 1001));
 		}
 	}
 }
@@ -343,6 +410,11 @@ Level::~Level()
 	}
 
 	for (auto p : m_weapon_objects)
+	{
+		if (p) { delete p; }
+	}
+
+	for (auto p : m_bullet_objects)
 	{
 		if (p) { delete p; }
 	}

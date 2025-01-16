@@ -6,6 +6,11 @@
 #include "Box.h"
 #include "Gameobject.h"
 
+/**
+ * The Bomb class implements one of the player's opponents, which is the bomb.
+ *
+ */
+
 class Bomb : public GameObject
 {
     graphics::Brush m_brush_bomb;

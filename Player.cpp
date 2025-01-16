@@ -19,10 +19,10 @@ void Player::update(float dt)
 	if (graphics::getKeyState(graphics::SCANCODE_S)) { m_pos_y += delta_time * velocity; }
 
 	/* Change the direction of the player */
-	if (graphics::getKeyState(graphics::SCANCODE_LEFT)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-left.png"); }
-	if (graphics::getKeyState(graphics::SCANCODE_RIGHT)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-right.png"); }
-	if (graphics::getKeyState(graphics::SCANCODE_UP)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-up.png"); }
-	if (graphics::getKeyState(graphics::SCANCODE_DOWN)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-down.png"); }
+	if (graphics::getKeyState(graphics::SCANCODE_LEFT)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-left.png"); direction = Left; }
+	if (graphics::getKeyState(graphics::SCANCODE_RIGHT)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-right.png"); direction = Right; }
+	if (graphics::getKeyState(graphics::SCANCODE_UP)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-up.png"); direction = Up; }
+	if (graphics::getKeyState(graphics::SCANCODE_DOWN)) { m_brush_player.texture = m_state->getFullAssetPath("spaceship-down.png"); direction = Down; }
 
 	/* Restrict the player from going outside the background */
 	if (m_pos_x < 0.5f) { m_pos_x = 0.5; }
@@ -39,10 +39,9 @@ void Player::init()
 {
 	m_pos_x = m_state->getCanvasWidth() / 2.0f;
 	m_pos_y = m_state->getCanvasHeight() / 2.0f;
-	current_health = 10;
 
-	m_state->m_global_offset_x = m_state->getCanvasWidth() / 2.0f - m_pos_x;
-	m_state->m_global_offset_y = m_state->getCanvasHeight() / 2.0f - m_pos_y;
+	direction = Right;
+	current_health = 10;
 
 	/* Brush of the player */
 	m_brush_player.fill_opacity = 1.0f;

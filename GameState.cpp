@@ -1,6 +1,8 @@
 #include "GameState.h"
 #include "util.h"
+#include "Elon.h"
 #include "Level.h"
+#include "Button.h"
 #include "Player.h"
 #include "Portal.h"
 #include "Meteorite.h"
@@ -14,6 +16,8 @@ void GameState::updateStartScreen(float dt)
 {
 	if (graphics::getKeyState(graphics::SCANCODE_RETURN))
 	{
+		temp_total_time = graphics::getGlobalTime();
+
 		level = Level1;
 
 		music = getAssetDir() + "slavic-cinematic-metal.mp3";
@@ -31,12 +35,39 @@ void GameState::updateGameScreen(float dt)
 
 void GameState::updateFailureScreen(float dt)
 {
-	graphics::MouseState mouse;
-	graphics::getMouseState(mouse);
+	graphics::MouseState ms;
+	graphics::getMouseState(ms);
 
-	if (mouse.button_left_pressed)
+	if (ms.button_left_pressed && ms.cur_pos_y >= 500 && ms.cur_pos_y <= 600)
 	{
+		if (ms.cur_pos_x >= 350 && ms.cur_pos_x < 500)
+		{
+			sound = getAssetDir() + "click.mp3";
+			graphics::playSound(sound, 1.0f, false);
 
+			temp_total_time = graphics::getGlobalTime();
+
+			m_current_level = new Level();
+			m_current_level->init();
+
+			m_player = new Player("SpaceCraft");
+			m_player->init();
+
+			m_portal = new Portal("Alien");
+
+			level = Level1;
+
+			music = getAssetDir() + "slavic-cinematic-metal.mp3";
+			graphics::playMusic(music, 0.5f, true, 2000);
+		}
+
+		if (ms.cur_pos_x >= 500 && ms.cur_pos_x <= 650)
+		{
+			sound = getAssetDir() + "click.mp3";
+			graphics::playSound(sound, 1.0f, false);
+
+			graphics::destroyWindow();
+		}
 	}
 }
 
@@ -71,14 +102,19 @@ void GameState::drawGameScreen()
 	if (!m_current_level) { return; }
 	if (m_player->m_active == false) 
 	{ 
-		sound = getAssetDir() + "fail-jingle.mp3";
+		sound = getAssetDir() + "fail.mp3";
 		graphics::playSound(sound, 0.5f, false);
-		level = Failure_Level;  
+
+		createButtons();
+		level = Failure_Level; 
+
+		music = getAssetDir() + "space.mp3";
+		graphics::playMusic(music, 1.0f, true, 2000);
+
+		return;
 	}
 
-	m_current_level->draw();
-
-	if (!m_portal->isActive()) 
+	if (m_portal && !m_portal->isActive()) 
 	{ 
 		score += m_player->total_score;
 
@@ -97,7 +133,6 @@ void GameState::drawGameScreen()
 			m_player->init();
 
 			m_portal = new Portal("Alien");
-			m_portal->init();
 
 			music = getAssetDir() + "slavic-cinematic-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
@@ -107,6 +142,7 @@ void GameState::drawGameScreen()
 			sound = getAssetDir() + "level-completed.wav";
 			graphics::playSound(sound, 0.5f, false);
 
+			unsigned short new_health = m_player->getHealth();
 			level = Level3;
 
 			m_current_level = new Level();
@@ -115,21 +151,32 @@ void GameState::drawGameScreen()
 			m_player = new Player("SpaceCraft");
 			m_player->init();
 
-			m_portal = new Portal("Alien");
-			m_portal->init();
+			m_player->updateHealth(new_health);
 
-			music = getAssetDir() + "slavic-cinematic-metal.mp3";
+			m_elon = new Elon("Elon");
+			m_elon->init();
+
+			sound = getAssetDir() + "evil-laugh.mp3";
+			graphics::playSound(sound, 1.5f, true);
+
+			music = getAssetDir() + "thrash-metal.mp3";
 			graphics::playMusic(music, 0.5f, true, 2000);
 		}
-		else if (level == Level3)
-		{
-			graphics::stopMusic();
-			level = Victory_Level;
-
-			sound = getAssetDir() + "level-completed.wav";
-			graphics::playSound(sound, 0.5f, false);
-		} 
+		 
 	}
+
+	if (level == Level3 && !m_elon->isActive())
+	{
+		graphics::stopMusic();
+		level = Victory_Level;
+
+		sound = getAssetDir() + "level-completed.wav";
+		graphics::playSound(sound, 0.5f, false);
+
+		return;
+	}
+
+	m_current_level->draw();
 }
 
 void GameState::drawFailureScreen()
@@ -153,6 +200,9 @@ void GameState::drawFailureScreen()
 	graphics::drawText(4.5f, 6.0f, 0.4f, yes, brush_text);
 	graphics::drawText(6.5f, 6.0f, 0.4f, no, brush_text);
 	graphics::drawRect(6.0f, 4.0f, 12.0f, 8.0f, brush_background);
+
+	left->draw();
+	right->draw();
 }
 
 void GameState::drawVictoryScreen()
@@ -173,6 +223,21 @@ void GameState::drawVictoryScreen()
 	graphics::drawRect(6.0f, 4.0f, 12.0f, 8.0f, brush_background);
 }
 
+void GameState::createButtons()
+{
+	right = new Button("Right");
+	left = new Button("Left");
+
+	right->init();
+	left->init();
+
+	right->m_pos_x = 5.1f;
+	right->m_pos_y = 5.8f;
+
+	left->m_pos_x = 6.85f;
+	left->m_pos_y = 5.8f;
+}
+
 void GameState::init()
 {
 	level = Entry_Level;
@@ -188,7 +253,7 @@ void GameState::init()
 	m_player->init();
 
 	m_portal = new Portal("Alien");
-	m_portal->init();
+	
 	graphics::preloadBitmaps(getAssetDir());
 }
 

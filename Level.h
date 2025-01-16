@@ -5,7 +5,14 @@
 #include "Meteorite.h"
 #include "GameState.h"
 #include "Weapon.h"
+#include "Bullet.h"
 #include "Star.h"
+
+/**
+ * The Level class generally implements the current level and holds all the game entities, handles background movement, 
+ * controls collisions between the player and enemies.
+ *
+ */
 
 class Level : public GameObject
 {
@@ -34,6 +41,7 @@ class Level : public GameObject
 	std::vector<Star*> m_static_objects;
 	std::vector<GameObject*> m_enemy_objects;
 	std::vector<Weapon*> m_weapon_objects;
+	std::vector<Bullet*> m_bullet_objects;
 
 	void checkCollision();
 	void checkObjects();

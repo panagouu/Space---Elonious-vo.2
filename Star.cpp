@@ -19,7 +19,7 @@ void Star::init()
 	m_height = 0.5f;
 
 	/* Generate random numbers for the coordinates x and y of the stars */
-	m_pos_x = rand() / (float)RAND_MAX * m_state->getCanvasWidth() * 20.0f;
+	m_pos_x = rand() / (float)RAND_MAX * m_state->getCanvasWidth() * 11.0f;
 	m_pos_y = rand() / (float)RAND_MAX * (m_state->getCanvasHeight() - 0.5f);
 
 	/* Brush of the star */
