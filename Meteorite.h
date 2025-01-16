@@ -5,6 +5,11 @@
 #include "Box.h"
 #include "Gameobject.h"
 
+/**
+ * The Meteorite class implements one of the player's opponents, which is the meteorite.
+ *
+ */
+
 class Meteorite : public GameObject
 {
     graphics::Brush m_brush_meteorite;

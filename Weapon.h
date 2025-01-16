@@ -5,6 +5,12 @@
 #include "Box.h"
 #include "Gameobject.h"
 
+/**
+ * The Weapon class generally implements the weapon that the player uses to attack his opponents 
+ * and includes some basic functions for planning and maintaining his position.
+ * 
+ */
+
 class Weapon : public GameObject
 {
     graphics::Brush m_brush_weapon;

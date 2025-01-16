@@ -3,6 +3,12 @@
 
 #include "Box.h"
 
+/**
+ * The GameObject class generally organizes basic functions and features that each game entity needs 
+ * to implement and have.
+ *
+ */
+
 class GameObject: public Box 
 {
 	static int m_next_id; 

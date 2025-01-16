@@ -14,9 +14,11 @@ void Weapon::init()
 	m_brush_weapon.fill_opacity = 1.0f;
 	m_brush_weapon.outline_opacity = 0.0f;
 
-	
+	/* 
+	* Initially set the x and the y so that the weapon is displayed by the player and
+	* keep the direction the player had, when he created the weapon in the weapon_direction variable
+	*/ 
 
-	/* Initially set the x and the y so that the weapon is displayed by the player */
 	if (m_state->getPlayer()->getDirection() == 0)
 	{
 		weapon_direction = Left;
@@ -58,6 +60,7 @@ void Weapon::update(float dt)
 {
 	float delta_time =  dt / 1000.0f;
 
+	// Change the x,y coordinates according to the direction the weapon has when it was created.
 	if (weapon_direction == 0)
 	{
 		m_pos_x -= delta_time * velocity;

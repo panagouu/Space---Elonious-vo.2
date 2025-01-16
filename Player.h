@@ -6,6 +6,12 @@
 #include "Weapon.h"
 #include "GameObject.h"
 
+/**
+ * The Player class implements the unique player of the game and has methods for designing the player,
+ * maintaining its position in the window, managing its lives, etc..
+ *
+ */
+
 class Player : public GameObject
 {
     graphics::Brush m_brush_player;

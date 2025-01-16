@@ -31,11 +31,6 @@ void Bullet::init()
 		m_brush_bullet.texture = m_state->getFullAssetPath("laser_enemy-down.png");
 	}
 
-	/* Initially set the x and the y so that the bullet is displayed by the Elon */
-	//m_pos_x = m_state->getElon()->m_pos_x;
-	//m_pos_y = m_state->getElon()->m_pos_y + 0.5f;
-
-
 }
 
 void Bullet::update(float dt)
@@ -45,13 +40,17 @@ void Bullet::update(float dt)
 	if (m_name == "Spacecraft")
 	{
 		m_pos_x -= delta_time * velocity;
+
+		if (m_pos_x < 0) { m_active = false; }
 	}
 	else if (m_name == "Elon")
 	{
 		m_pos_y += delta_time * velocity;
+
+		if (m_pos_y > 2 * m_state->getCanvasHeight()) { m_active = false; }
 	}
 
-	if (m_pos_y > 2 * m_state->getCanvasHeight()) { m_active = false; }
+	
 }
 
 void Bullet::draw()

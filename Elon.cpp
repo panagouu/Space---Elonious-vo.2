@@ -8,6 +8,7 @@ void Elon::update(float dt)
 {
 	float delta_time = dt / 1000.0f;
 
+	// Change the velocity so that this entity comes and goes on the x-axis.
 	if (m_pos_x <= 0.5f) { velocity = 8.0f; }
 	if (m_pos_x >= m_state->getCanvasWidth()) { velocity = -8.0f; }
 
@@ -30,8 +31,7 @@ void Elon::init()
 	shoot_timer = 300.f;
 	t_reset_val = 300.f;
 
-
-	/* Brush of the player */
+	/* Brush of the Elon */
 	m_brush_elon.fill_opacity = 1.0f;
 	m_brush_elon.outline_opacity = 0.0f;
 	m_brush_elon.texture = m_state->getFullAssetPath("elon4.png");

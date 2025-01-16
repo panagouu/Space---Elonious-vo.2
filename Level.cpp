@@ -166,6 +166,11 @@ void Level::update(float dt)
 		if (p) { p->update(dt); }
 	}
 
+	for (auto p : m_bullet_objects)
+	{
+		if (p) { p->update(dt); }
+	}
+
 	for (auto p : m_static_objects)
 	{
 		if (p) { p->update(dt); }
@@ -318,6 +323,34 @@ void Level::checkCollision()
 		}
 	}
 
+	/* Check if an object Weapon hits the object Elon */
+	for (auto& weapon : m_weapon_objects) {
+		if (m_state->getElon() && weapon->intersect(*m_state->getElon()))
+		{
+			m_state->getElon()->current_health--;
+
+			m_state->getPlayer()->total_score += m_state->getElon()->points;
+			weapon->m_active = false;
+
+		}
+	}
+
+	/* Check if an object Bullet hits the player */
+	for (auto& bullet : m_bullet_objects) {
+		if (bullet->intersect(*m_state->getPlayer()))
+		{
+			if (!bullet->has_collided)
+			{
+				bullet->has_collided = true;
+				bullet->m_active = false;
+				m_state->getPlayer()->current_health -= bullet->dynamic;
+			}
+		}
+		else { 
+			bullet->has_collided = false; 
+		}
+	}
+
 	/* Check if the player collides with the Portal and move the player to the next level */
 	if (m_state->getPlayer()->intersect(*m_state->getPortal()))
 	{
@@ -343,7 +376,7 @@ void Level::checkObjects()
 	{
 		if (p && !p->isActive()) 
 		{
-			/* delete the object p from the vector m_meteorite_objects */
+			/* delete the object p from the vector m_enemy_objects */
 			m_enemy_objects.erase(std::remove(m_enemy_objects.begin(), m_enemy_objects.end(), p), m_enemy_objects.end());
 
 			delete p;
@@ -358,6 +391,18 @@ void Level::checkObjects()
 			/* delete the object p from the vector m_weapon_objects */
 			m_weapon_objects.erase(std::remove(m_weapon_objects.begin(), m_weapon_objects.end(), p), m_weapon_objects.end());
 			
+			delete p;
+			p = nullptr;
+		}
+	}
+
+	for (GameObject* p : m_bullet_objects)
+	{
+		if (p && !p->isActive())
+		{
+			/* delete the object p from the vector m_bullet_objects */
+			m_bullet_objects.erase(std::remove(m_bullet_objects.begin(), m_bullet_objects.end(), p), m_bullet_objects.end());
+
 			delete p;
 			p = nullptr;
 		}

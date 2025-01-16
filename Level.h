@@ -8,6 +8,12 @@
 #include "Bullet.h"
 #include "Star.h"
 
+/**
+ * The Level class generally implements the current level and holds all the game entities, handles background movement, 
+ * controls collisions between the player and enemies.
+ *
+ */
+
 class Level : public GameObject
 {
 	graphics::Brush m_brush_back;

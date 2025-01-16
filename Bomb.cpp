@@ -15,7 +15,7 @@ void Bomb::update(float dt)
 
 void Bomb::init()
 {
-	/* Generate random numbers for the coordinates x and y of the weapons */
+	/* Generate random numbers for the coordinate y of the bomb */
 	m_pos_x = m_state->getCanvasWidth() + 2.0f;
 	m_pos_y = ((float)rand() / RAND_MAX) * (m_state->getCanvasHeight() - 0.5f);
 
@@ -26,7 +26,7 @@ void Bomb::init()
 	m_width = 1.8f;
 	m_height = 1;
 
-	/* Brush of the meteorite */
+	/* Brush of the bomb */
 	m_brush_bomb.fill_opacity = 1.0f;
 	m_brush_bomb.outline_opacity = 0.0f;
 	m_brush_bomb.texture = m_state->getFullAssetPath("nuclear-left.png");
@@ -35,7 +35,6 @@ void Bomb::init()
 
 void Bomb::draw()
 {
-	graphics::setOrientation(rotation);
 	graphics::drawRect(m_pos_x, m_pos_y, m_width, m_height, m_brush_bomb);
 
 	graphics::resetPose();
